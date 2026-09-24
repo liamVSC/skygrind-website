@@ -14,23 +14,73 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
+      - name: Validate HTML
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          files=list(Path('.').glob('*.html'))
+          required=['css/style.css','js/main.js']
+          bad=False
+          for f in files:
+              s=f.read_text()
+              for asset in required:
+                  if asset not in s:
+                      print(f"::error file={f}::Missing {asset}")
+                      bad=True
+              if '<title>' not in s:
+                  print(f"::error file={f}::Missing <title>")
+                  bad=True
+          if bad: sys.exit(1)
+          print(f"Validated {len(files)} HTML pages.")
+          PY
+
+      - name: Validate JavaScript
+        run: |
+          node --check js/main.js
+          node --check js/config.js
+
+      - name: Check internal links
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          root=Path('.')
+          bad=[]
+          for f in root.glob('*.html'):
+              for href in re.findall(r'href=["\']([^"\'#?]+)', f.read_text()):
+                  if href.startswith(('http://','https://','mailto:','tel:')): continue
+                  target=(f.parent/href).resolve()
+                  if not target.exists():
+                      bad.append(f"{f}: {href}")
+          if bad:
+              print("Broken internal links:")
+              print("\n".join(bad))
+              sys.exit(1)
+          print("Internal links OK.")
+          PY
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: .
-
+          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
