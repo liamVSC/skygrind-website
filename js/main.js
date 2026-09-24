@@ -1,0 +1,1 @@
+(()=>{document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);let x=b.textContent;b.textContent="COPIED!";setTimeout(()=>b.textContent=x,1400)}catch(e){}}));let m=document.querySelector(".menu"),n=document.querySelector("nav");if(m&&n)m.onclick=()=>n.classList.toggle("open");})();
