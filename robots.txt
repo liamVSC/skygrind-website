@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://liamvsc.github.io/skygrind-website/sitemap.xml
