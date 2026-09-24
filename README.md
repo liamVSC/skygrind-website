@@ -17,3 +17,7 @@ Home, Play, Features, Leaderboards, Ranks, Store, Rules and FAQ.
 ## Future API
 
 Keep MariaDB credentials off the frontend. When the SkyGrind Java API is ready, connect leaderboard/status data through a public authenticated API and keep its endpoint in configuration.
+
+## Deployment
+
+GitHub Pages is configured to publish through GitHub Actions.
