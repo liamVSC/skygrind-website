@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#050816">
+<title>VOIDRUN — Catch the Falling Sky</title>
+<style>
+:root{--bg:#050816;--panel:#0b1024;--line:#202b52;--text:#f4f7ff;--muted:#8994b8;--cyan:#55e6ff;--pink:#ff5fd2;--gold:#ffd166;--good:#61ff9a;}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}button{font:inherit;color:inherit}
+body{background:radial-gradient(circle at 50% 15%,#14214d 0,#080d21 35%,#050816 75%)}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#hud{position:fixed;inset:0;pointer-events:none;padding:18px;display:flex;justify-content:space-between;align-items:flex-start}
+.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:#080d1ddd;border:1px solid #24315b;border-radius:14px;padding:9px 13px;min-width:92px;backdrop-filter:blur(10px)}.stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1.5px}.stat b{font-size:18px}.right{text-align:right}.combo{color:var(--gold)}
+#pause{pointer-events:auto;border:1px solid #31406e;background:#0a1025dd;border-radius:12px;padding:9px 12px;cursor:pointer}#pause:hover{border-color:var(--cyan)}
+#overlay{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:#02040bd0;backdrop-filter:blur(8px);z-index:5}.card{width:min(560px,100%);background:linear-gradient(145deg,#0c1430f5,#080c1cf5);border:1px solid #293865;border-radius:26px;padding:30px;box-shadow:0 30px 100px #0008;text-align:center}.logo{font-weight:900;letter-spacing:5px;font-size:13px;color:var(--cyan)}h1{font-size:clamp(44px,11vw,86px);line-height:.9;margin:12px 0;background:linear-gradient(100deg,var(--cyan),#fff,var(--pink));-webkit-background-clip:text;color:transparent}h2{font-size:28px;margin:5px 0 10px}p{color:#aab4d1;line-height:1.6;margin:8px 0 20px}.tip{font-size:13px;color:#7f8bad}.buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.btn{pointer-events:auto;border:1px solid #31406e;background:#111936;padding:13px 20px;border-radius:14px;font-weight:800;cursor:pointer}.btn.primary{border-color:#4fe4ff;background:linear-gradient(135deg,#12364a,#10213b);box-shadow:0 0 30px #55e6ff18}.btn:hover{transform:translateY(-1px);filter:brightness(1.15)}
+#shop{display:none;position:fixed;right:18px;top:78px;width:min(330px,calc(100% - 36px));background:#080d1eee;border:1px solid #293865;border-radius:18px;padding:14px;z-index:4;backdrop-filter:blur(12px)}#shop h3{margin:2px 0 12px}.upgrade{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;border:1px solid #202d55;border-radius:13px;margin:7px 0;background:#0b1128}.upgrade small{display:block;color:var(--muted)}.upgrade button{border:1px solid #3c4d80;background:#111a38;border-radius:9px;padding:8px 10px;cursor:pointer}.upgrade button:disabled{opacity:.35;cursor:not-allowed}
+#toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);opacity:0;background:#0c1430ee;border:1px solid #344678;border-radius:999px;padding:10px 17px;z-index:8;transition:.25s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}
+#mission{position:fixed;left:50%;top:18px;transform:translateX(-50%);font-size:12px;color:#9eabcc;background:#080d1dcc;border:1px solid #202d55;padding:8px 13px;border-radius:999px;z-index:2;pointer-events:none}.hidden{display:none!important}
+@media(max-width:600px){#hud{padding:10px}.stat{min-width:74px;padding:7px 9px}.stat b{font-size:15px}.right{display:none}.card{padding:24px 18px}}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="mission"></div>
+<div id="hud" class="hidden">
+ <div class="stats">
+  <div class="stat"><small>Score</small><b id="score">0</b></div>
+  <div class="stat"><small>Shards</small><b id="shards">0</b></div>
+  <div class="stat"><small>Combo</small><b class="combo" id="combo">x1</b></div>
+ </div>
+ <div class="stats right">
+  <div class="stat"><small>Best</small><b id="best">0</b></div>
+  <button id="pause">Ⅱ</button>
+ </div>
+</div>
+<div id="shop">
+ <h3>⚡ Ship upgrades</h3>
+ <div class="upgrade"><div><b>Magnet</b><small id="magText">pulls nearby shards</small></div><button id="magBtn"></button></div>
+ <div class="upgrade"><div><b>Thrusters</b><small id="speedText">move faster</small></div><button id="speedBtn"></button></div>
+ <div class="upgrade"><div><b>Shield</b><small id="shieldText">survive one asteroid</small></div><button id="shieldBtn"></button></div>
+ <button class="btn" id="closeShop" style="width:100%;margin-top:7px">CLOSE</button>
+</div>
+<div id="overlay">
+ <div class="card" id="menu">
+  <div class="logo">A ONE-MINUTE COSMIC ARCADE</div><h1>VOIDRUN</h1>
+  <p>Catch falling stars. Dodge dead worlds. Build a ridiculous combo. Every run gets faster — and the sky remembers your best score.</p>
+  <div class="buttons"><button class="btn primary" id="start">LAUNCH RUN →</button><button class="btn" id="how">HOW TO PLAY</button></div>
+  <p class="tip">Mouse / touch / A-D or ← → to move · Space pauses</p>
+ </div>
+ <div class="card hidden" id="howCard">
+  <h2>How to play</h2><p>Move the little ship at the bottom. Collect <b style="color:#ffd166">gold stars</b> for points and <b style="color:#55e6ff">blue shards</b> for upgrades. Keep collecting without missing to grow your combo.</p><p>Pink comets are worth a lot. Red asteroids end the run unless your shield saves you. The longer you survive, the stranger the sky gets.</p><div class="buttons"><button class="btn primary" id="back">GOT IT</button></div>
+ </div>
+ <div class="card hidden" id="gameover">
+  <div class="logo">RUN COMPLETE</div><h2 id="finalTitle">VOID COLLAPSED</h2><p id="finalStats"></p><div class="buttons"><button class="btn primary" id="again">RUN IT BACK →</button><button class="btn" id="gameShop">UPGRADES</button></div>
+ </div>
+</div>
+<div id="toast"></div>
+<script>
+(() => {
+'use strict';
+const c=document.getElementById('game'),ctx=c.getContext('2d');
+const $=id=>document.getElementById(id);
+let W=innerWidth,H=innerHeight,dpr=1;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
+const saved=JSON.parse(localStorage.getItem('voidrun-save')||'null')||{best:0,shards:0,up:{mag:0,speed:0,shield:0}};
+let state='menu',score=0,runShards=0,combo=1,comboTimer=0,time=0,last=0,spawn=0,shake=0,flash=0,paused=false;
+let ship={x:W/2,y:H-85,vx:0,r:18};let objects=[],particles=[],stars=[];let keys={left:false,right:false};
+for(let i=0;i<130;i++)stars.push({x:Math.random()*W,y:Math.random()*H,z:.3+Math.random()*1.7,s:Math.random()*2+.4});
+function save(){localStorage.setItem('voidrun-save',JSON.stringify(saved))}
+function money(){return saved.shards+runShards}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),1600)}
+function show(id){['menu','howCard','gameover'].forEach(x=>$(x).classList.add('hidden'));if(id)$(id).classList.remove('hidden')}
+function reset(){score=0;runShards=0;combo=1;comboTimer=0;time=0;spawn=0;shake=0;flash=0;objects=[];particles=[];ship={x:W/2,y:H-85,vx:0,r:18};paused=false;updateHud()}
+function start(){reset();state='play';$('overlay').style.display='none';$('hud').classList.remove('hidden');$('shop').style.display='none';last=performance.now();requestAnimationFrame(loop)}
+function end(reason){state='over';saved.shards+=runShards;if(score>saved.best){saved.best=score;toast('NEW PERSONAL BEST ✦')}save();$('finalTitle').textContent=reason||'VOID COLLAPSED';$('finalStats').innerHTML=`<b>${score.toLocaleString()}</b> points · <b>${runShards}</b> shards · peak combo <b>x${combo}</b><br><span class="tip">Lifetime shards: ${saved.shards}</span>`;$('overlay').style.display='grid';show('gameover');$('hud').classList.add('hidden')}
+function updateHud(){$('score').textContent=Math.floor(score).toLocaleString();$('shards').textContent=runShards;$('combo').textContent='x'+combo;$('best').textContent=saved.best.toLocaleString()}
+function addParticle(x,y,color,n=8,pow=2){for(let i=0;i<n;i++){let a=Math.random()*Math.PI*2,v=Math.random()*pow+0.5;particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:1,color,size:Math.random()*3+1})}}
+function spawnObject(){let r=Math.random(),type=r<.12?'comet':r<.27?'shard':r<.42?'asteroid':'star';let size=type==='asteroid'?17+Math.random()*12:type==='comet'?12:8+Math.random()*5;objects.push({type,x:25+Math.random()*(W-50),y:-35,size,vy:110+Math.random()*90+time*3,rot:Math.random()*7})}
+function collect(o){let pts=o.type==='star'?10:o.type==='shard'?5: o.type==='comet'?50:0; if(o.type==='asteroid')return false;score+=pts*combo; if(o.type==='shard')runShards++; combo=Math.min(99,combo+1);comboTimer=2.2;addParticle(o.x,o.y,o.type==='comet'?'#ff5fd2':o.type==='shard'?'#55e6ff':'#ffd166',o.type==='comet'?20:10,3);flash=.12;return true}
+function hit(){if(saved.up.shield>0){saved.up.shield=0;save();addParticle(ship.x,ship.y,'#61ff9a',30,5);flash=.35;shake=15;toast('SHIELD SAVED THE RUN');return}addParticle(ship.x,ship.y,'#ff5b6e',35,6);shake=25;end('SHIP LOST')}
+function update(dt){time+=dt;let accel=1050*(1+saved.up.speed*.13);if(keys.left)ship.vx-=accel*dt;if(keys.right)ship.vx+=accel*dt;ship.vx*=Math.pow(.001,dt);ship.x+=ship.vx*dt;let lim=ship.r+5;ship.x=Math.max(lim,Math.min(W-lim,ship.x));
+ spawn-=dt;let rate=Math.max(.18,.62-time*.0035);if(spawn<=0){spawn=rate;spawnObject();if(Math.random()<Math.min(.3,time/120))spawnObject()}
+ for(let i=objects.length-1;i>=0;i--){let o=objects[i];o.y+=o.vy*dt;o.rot+=dt*2;let dx=o.x-ship.x,dy=o.y-ship.y,dist=Math.hypot(dx,dy),reach=ship.r+o.size+(o.type==='shard'?24*saved.up.mag:0);if(o.type==='shard'&&dist<80+saved.up.mag*28){o.x+=(ship.x-o.x)*dt*(2+saved.up.mag);o.y+=(ship.y-o.y)*dt*(2+saved.up.mag)}if(dist<reach){if(collect(o))objects.splice(i,1);else{objects.splice(i,1);hit();if(state!=='play')return}}else if(o.y>H+50){objects.splice(i,1);if(o.type!=='asteroid'){combo=Math.max(1,combo-2);comboTimer=0}}}
+ if(comboTimer>0)comboTimer-=dt;else combo=Math.max(1,combo-1);flash=Math.max(0,flash-dt);shake*=Math.pow(.01,dt);for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*dt*50;p.y+=p.vy*dt*50;p.vy+=.04;p.life-=dt*1.7;if(p.life<=0)particles.splice(i,1)}updateHud();
+ if(Math.floor(time)%15===0&&Math.floor((time-dt)%15)!==Math.floor(time)){score+=combo*5;toast('SURVIVAL BONUS +'+combo*5)}
+}
+function draw(){ctx.save();if(shake>1)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);ctx.fillStyle='#050816';ctx.fillRect(-30,-30,W+60,H+60);
+ let g=ctx.createRadialGradient(W/2,H*.2,10,W/2,H*.2,Math.max(W,H)*.8);g.addColorStop(0,'#111d46');g.addColorStop(1,'#050816');ctx.fillStyle=g;ctx.fillRect(-30,-30,W+60,H+60);
+ for(const s of stars){s.y+=s.z*.18;if(s.y>H)s.y=0;ctx.globalAlpha=.25+s.z*.25;ctx.fillStyle='#b9c8ff';ctx.fillRect(s.x,s.y,s.s,s.s)}ctx.globalAlpha=1;
+ ctx.strokeStyle='#182348';ctx.lineWidth=1;ctx.globalAlpha=.25;for(let y=H*.65;y<H;y+=55){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.globalAlpha=1;
+ for(const o of objects){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot);if(o.type==='star'){ctx.fillStyle='#ffd166';ctx.shadowBlur=18;ctx.shadowColor='#ffd166';star(0,0,o.size,5)}else if(o.type==='shard'){ctx.fillStyle='#55e6ff';ctx.shadowBlur=18;ctx.shadowColor='#55e6ff';ctx.beginPath();ctx.moveTo(0,-o.size);ctx.lineTo(o.size*.65,0);ctx.lineTo(0,o.size);ctx.lineTo(-o.size*.65,0);ctx.fill()}else if(o.type==='comet'){ctx.fillStyle='#ff5fd2';ctx.shadowBlur=25;ctx.shadowColor='#ff5fd2';ctx.beginPath();ctx.arc(0,0,o.size,0,7);ctx.fill();ctx.globalAlpha=.35;ctx.beginPath();ctx.moveTo(-o.size,0);ctx.lineTo(-o.size*5,0);ctx.lineWidth=o.size*.7;ctx.strokeStyle='#ff5fd2';ctx.stroke()}else{ctx.fillStyle='#d94d65';ctx.shadowBlur=14;ctx.shadowColor='#d94d65';ctx.beginPath();for(let i=0;i<8;i++){let a=i*Math.PI/4,r=o.size*(.75+Math.random()*.25);ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();ctx.fill()}ctx.restore()}
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,7);ctx.fill()}ctx.globalAlpha=1;
+ // ship
+ ctx.save();ctx.translate(ship.x,ship.y);let pulse=1+Math.sin(performance.now()/90)*.08;ctx.shadowBlur=25;ctx.shadowColor='#55e6ff';ctx.fillStyle='#55e6ff';ctx.beginPath();ctx.moveTo(0,-22*pulse);ctx.lineTo(17,16);ctx.lineTo(0,10);ctx.lineTo(-17,16);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,-4,5,0,7);ctx.fill();ctx.fillStyle='#0b1632';ctx.beginPath();ctx.arc(0,-4,2,0,7);ctx.fill();ctx.restore();
+ if(combo>1){ctx.font='800 16px system-ui';ctx.textAlign='center';ctx.fillStyle='#ffd166';ctx.fillText('COMBO x'+combo,W/2,H-28)}ctx.restore();if(flash){ctx.fillStyle=`rgba(255,255,255,${flash*.22})`;ctx.fillRect(0,0,W,H)}
+}
+function star(x,y,r,n){ctx.beginPath();for(let i=0;i<n*2;i++){let rr=i%2?r:r*.4,a=i*Math.PI/n-Math.PI/2;ctx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}ctx.closePath();ctx.fill()}
+function loop(now){if(state!=='play')return;let dt=Math.min(.033,(now-last)/1000);last=now;if(!paused)update(dt);draw();requestAnimationFrame(loop)}
+function togglePause(){if(state!=='play')return;paused=!paused;toast(paused?'PAUSED':'RESUMED')}
+function shop(){let s=saved.up;const costs={mag:25+50*s.mag,speed:35+60*s.speed,shield:100};$('shop').style.display='block';$('magText').textContent=`level ${s.mag} · bigger pull`;$('speedText').textContent=`level ${s.speed} · faster steering`;$('shieldText').textContent=s.shield?'READY':'single-use protection';for(const [id,key] of [['mag','mag'],['speed','speed'],['shield','shield']]){let b=$(id+'Btn');let cost=key==='shield'?100:costs[key];b.textContent=key==='shield'?(s.shield?'ACTIVE':'100 ✦'):(cost+' ✦');b.disabled=key==='shield'?s.shield>0:s[key]>=8||saved.shards<cost}}
+function buy(k){let s=saved.up,c=k==='shield'?100:(k==='mag'?25+50*s.mag:35+60*s.speed);if(k==='shield'&&s.shield)return;if(saved.shards<c)return toast('Need '+c+' lifetime shards');saved.shards-=c;if(k==='shield')s.shield=1;else s[k]++;save();shop();toast('UPGRADE INSTALLED ✦')}
+addEventListener('keydown',e=>{if(e.code==='ArrowLeft'||e.code==='KeyA')keys.left=true;if(e.code==='ArrowRight'||e.code==='KeyD')keys.right=true;if(e.code==='Space'){e.preventDefault();togglePause()}if(e.code==='Escape')$('shop').style.display='none'});addEventListener('keyup',e=>{if(e.code==='ArrowLeft'||e.code==='KeyA')keys.left=false;if(e.code==='ArrowRight'||e.code==='KeyD')keys.right=false});
+let pointer=false;addEventListener('pointermove',e=>{if(state!=='play')return;pointer=true;ship.x+=(e.clientX-ship.x)*.18});
+$('start').onclick=start;$('again').onclick=start;$('how').onclick=()=>show('howCard');$('back').onclick=()=>show('menu');$('pause').onclick=togglePause;$('gameShop').onclick=()=>{show('gameover');shop()};$('closeShop').onclick=()=>$('shop').style.display='none';$('magBtn').onclick=()=>buy('mag');$('speedBtn').onclick=()=>buy('speed');$('shieldBtn').onclick=()=>buy('shield');
+$('gameover').addEventListener('click',e=>e.stopPropagation());
+// Ambient preview
+function menuLoop(){if(state==='menu'||state==='over'){draw();requestAnimationFrame(menuLoop)}}menuLoop();
+})();
+</script>
+</body>
+</html>
