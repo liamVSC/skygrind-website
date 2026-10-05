@@ -3,100 +3,136 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#07110d">
-<meta name="description" content="SkyGrind — a Minecraft SkyBlock server currently in beta. Java and Bedrock crossplay.">
-<title>SkyGrind — Minecraft SkyBlock Beta</title>
+<meta name="theme-color" content="#101b0d">
+<meta name="description" content="SkyGrind — Minecraft SkyBlock beta. Java + Bedrock crossplay. Play now.">
+<title>SkyGrind — Minecraft SkyBlock</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-<div class="bg"></div>
+<div class="world-bg" aria-hidden="true">
+  <div class="sun"></div>
+  <div class="cloud cloud-a"></div>
+  <div class="cloud cloud-b"></div>
+  <div class="mountain mountain-a"></div>
+  <div class="mountain mountain-b"></div>
+</div>
+
 <header>
-  <a class="logo" href="index.html">◆ SKY<span>GRIND</span></a>
+  <a class="logo" href="index.html" aria-label="SkyGrind home">
+    <span class="logo-block">S</span><span>SKY<span class="logo-green">GRIND</span></span>
+  </a>
   <button class="menu" aria-label="Open menu" aria-expanded="false">☰</button>
   <nav>
     <a class="active" href="index.html">Home</a>
-    <a href="play.html">Play Beta</a>
-    <a href="features.html">Features</a>
-    <a href="roadmap.html">Roadmap</a>
-    <a href="faq.html">FAQ</a>
+    <a href="play.html">How to Play</a>
     <a data-discord-link href="discord.html">Discord</a>
   </nav>
 </header>
 
 <main>
-<section class="hero beta-hero">
-  <div class="beta-pill"><span></span> BETA IS LIVE</div>
-  <small>JAVA + BEDROCK CROSSPLAY</small>
-  <h1>YOUR ISLAND.<br><i>YOUR GRIND.</i></h1>
-  <p>SkyGrind is a Minecraft SkyBlock server currently in beta. Build your island, grow your economy, complete quests and progress alongside the community.</p>
+<section class="hero hero-home">
+  <div class="hero-copy">
+    <div class="pixel-badge"><span class="live-dot"></span> BETA IS LIVE</div>
+    <div class="edition-line">JAVA <b>+</b> BEDROCK <span>CROSSPLAY</span></div>
+    <h1>BUILD.<br><span>GRIND.</span><br>REPEAT.</h1>
+    <p>SkyGrind is a Minecraft SkyBlock server in beta. Start your island, build your economy and see how far you can take it.</p>
+    <div class="actions">
+      <a class="mc-button mc-button-green" href="play.html">▶ PLAY NOW</a>
+      <a class="mc-button" data-discord-link href="discord.html">DISCORD</a>
+    </div>
+  </div>
+
+  <div class="island-scene" aria-hidden="true">
+    <div class="island">
+      <div class="island-grass"></div>
+      <div class="island-dirt dirt-1"></div>
+      <div class="island-dirt dirt-2"></div>
+      <div class="island-dirt dirt-3"></div>
+      <div class="tree">
+        <div class="leaves leaves-top"></div>
+        <div class="leaves leaves-mid"></div>
+        <div class="trunk"></div>
+      </div>
+      <div class="ore ore-a"></div>
+      <div class="ore ore-b"></div>
+      <div class="ore ore-c"></div>
+    </div>
+  </div>
+</section>
+
+<section class="server-bar">
+  <div>
+    <span class="label">SERVER ADDRESS</span>
+    <code data-server-ip>play.skygrind.online</code>
+  </div>
+  <div class="port">
+    <span class="label">PORT</span>
+    <code data-server-port>25489</code>
+  </div>
+  <button class="copy-button" data-copy-server data-copy="play.skygrind.online">COPY IP</button>
+</section>
+
+<section class="section what-you-get">
+  <div class="section-heading">
+    <span class="eyebrow">YOUR SKYBLOCK ADVENTURE</span>
+    <h2>WHAT'S WAITING<br><span>ON YOUR ISLAND?</span></h2>
+  </div>
+  <div class="feature-grid">
+    <article class="block-card">
+      <div class="block-icon grass-block">◆</div>
+      <h3>YOUR ISLAND</h3>
+      <p>Start with a small island and turn it into your own SkyGrind base.</p>
+    </article>
+    <article class="block-card">
+      <div class="block-icon iron-block">↗</div>
+      <h3>PROGRESSION</h3>
+      <p>Upgrade, expand and keep pushing your island further.</p>
+    </article>
+    <article class="block-card">
+      <div class="block-icon gold-block">₿</div>
+      <h3>ECONOMY</h3>
+      <p>Earn money, build resources and grow your island's value.</p>
+    </article>
+    <article class="block-card">
+      <div class="block-icon diamond-block">✦</div>
+      <h3>QUESTS & REWARDS</h3>
+      <p>Complete objectives, chase rewards and keep the grind moving.</p>
+    </article>
+  </div>
+</section>
+
+<section class="beta-section">
+  <div class="beta-inner">
+    <div>
+      <span class="eyebrow">CURRENT SERVER</span>
+      <h2>THE BETA<br><span>IS PLAYABLE.</span></h2>
+      <p>Don't wait for launch. SkyGrind is already online. Jump in, play the current version and help us build what comes next.</p>
+      <a class="mc-button mc-button-green" href="play.html">HOW TO JOIN →</a>
+    </div>
+    <div class="beta-list">
+      <div><b>01</b><span>PLAY NOW</span><small>The server is live</small></div>
+      <div><b>02</b><span>PLAY WITH FRIENDS</span><small>Java + Bedrock crossplay</small></div>
+      <div><b>03</b><span>GIVE FEEDBACK</span><small>Help shape the beta</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="pixel-badge"><span class="live-dot"></span> SKYGRIND BETA</div>
+  <h2>READY TO<br><span>GRIND?</span></h2>
   <div class="actions">
-    <a class="btn primary" href="play.html">PLAY THE BETA →</a>
-    <a class="btn" data-discord-link href="discord.html">JOIN DISCORD</a>
+    <a class="mc-button mc-button-green" href="play.html">▶ PLAY SKYGRIND</a>
+    <a class="mc-button" data-discord-link href="discord.html">JOIN DISCORD</a>
   </div>
-  <div class="ip">
-    <span>Server IP</span>
-    <code><span data-server-ip>play.skygrind.online</span></code>
-    <button data-copy-server data-copy="play.skygrind.online">COPY</button>
-  </div>
-  <div class="beta-note">Actively developing · Feedback from beta players helps shape the server</div>
-</section>
-
-<section class="stats">
-  <div><b>LIVE</b><small>Beta server</small></div>
-  <div><b>JAVA</b><small>Edition</small></div>
-  <div><b>BEDROCK</b><small>Crossplay</small></div>
-  <div><b>24/7</b><small>SkyBlock</small></div>
-</section>
-
-<section class="section">
-  <small>THE BETA EXPERIENCE</small>
-  <h2>Start small.<br>Build something <i>bigger.</i></h2>
-  <div class="cards">
-    <article><strong>◆</strong><h3>ISLANDS</h3><p>Start your island and turn a small piece of SkyBlock into your own base.</p></article>
-    <article><strong>↗</strong><h3>UPGRADES</h3><p>Improve your island and unlock stronger progression as you grind.</p></article>
-    <article><strong>₿</strong><h3>ECONOMY</h3><p>Earn money, build your resources and keep pushing your island forward.</p></article>
-    <article><strong>✦</strong><h3>QUESTS & REWARDS</h3><p>Complete objectives, open crates and chase rewards while you progress.</p></article>
-  </div>
-</section>
-
-<section class="beta-callout">
-  <div>
-    <div class="beta-pill"><span></span> CURRENTLY IN BETA</div>
-    <h2>Help shape<br><i>SkyGrind.</i></h2>
-    <p>The server is playable now while the next generation of SkyGrind is being developed. Systems will change and improve as development continues.</p>
-  </div>
-  <div class="beta-checks">
-    <div><b>01</b><span>PLAY</span><small>Try the current server</small></div>
-    <div><b>02</b><span>FEEDBACK</span><small>Tell us what needs improving</small></div>
-    <div><b>03</b><span>PROGRESS</span><small>Watch SkyGrind grow</small></div>
-  </div>
-</section>
-
-<section class="split">
-  <div>
-    <small>ONE SERVER. TWO EDITIONS.</small>
-    <h2>Play with your <i>friends.</i></h2>
-    <p>Java and Bedrock players can play together through Geyser. Jump into the beta and start building.</p>
-    <a class="btn" href="play.html">HOW TO JOIN →</a>
-  </div>
-  <div class="terminal">
-    <small>CONNECT TO SKYGRIND</small>
-    <b><span data-server-ip>play.skygrind.online</span></b>
-    <small>SERVER STATUS</small>
-    <b class="green">BETA ONLINE</b>
-  </div>
-</section>
-
-<section class="cta">
-  <small>THE BETA IS OPEN</small>
-  <h2>Ready to <i>grind?</i></h2>
-  <p>Connect now and be part of SkyGrind while it's still being built.</p>
-  <a class="btn primary" href="play.html">PLAY SKYGRIND →</a>
 </section>
 </main>
 
-<footer>© 2026 SkyGrind · <a href="rules.html">Rules</a> · <a href="faq.html">FAQ</a> · <a data-discord-link href="discord.html">Discord</a></footer>
+<footer>
+  <span>© 2026 SKYGRIND</span>
+  <span>JAVA + BEDROCK</span>
+  <a data-discord-link href="discord.html">DISCORD</a>
+</footer>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
 </body>
