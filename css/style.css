@@ -20,3 +20,47 @@
   .beta-callout{grid-template-columns:1fr;padding:45px 28px;gap:30px}
   .beta-checks{border-left:0;border-top:1px solid var(--line);padding:15px 0 0}
 }
+
+/* Compact visual pass */
+:root{--max:1120px}
+header{height:68px}
+nav{gap:18px}
+nav a{font-size:12px}
+.hero{padding:72px 0 58px;min-height:0}
+.beta-hero{padding-top:62px;min-height:590px}
+.hero h1{font-size:clamp(54px,8.5vw,104px);margin:18px 0}
+.hero p{font-size:16px;line-height:1.55}
+.actions{margin:22px 0}
+.btn{padding:11px 17px}
+.stats div{padding:18px 22px}
+.section{padding:76px 0}
+.section h2,.split h2,.cta h2,.spotlight h2,.shop-intro h2,.store-note h2{font-size:clamp(34px,4.5vw,54px);margin:8px 0 24px}
+.cards{gap:10px}
+.cards article{padding:22px;min-height:170px}
+.cards h3{margin-top:22px}
+.cards p{font-size:13px;line-height:1.5}
+.spotlight{padding:45px 0 75px;gap:28px}
+.cube{height:250px}
+.split{padding:55px 0 75px;gap:45px}
+.terminal{padding:30px}
+.terminal b{font-size:18px;margin-bottom:20px}
+.cta{padding:75px 0}
+.beta-callout{padding:55px 45px;gap:45px}
+.beta-callout h2{font-size:clamp(38px,5vw,62px);margin:6px 0 18px}
+.beta-callout p{font-size:14px}
+.beta-checks{padding-left:30px}
+footer{padding:22px}
+.shop-wrap{padding:20px 0 75px}
+.rank-grid{padding-bottom:75px}
+@media(max-width:850px){
+  header{height:64px}
+  .hero{padding:58px 0 45px}
+  .beta-hero{padding-top:48px;min-height:0}
+  .hero h1{font-size:17vw}
+  .section{padding:60px 0}
+  .cards article{min-height:145px}
+  .spotlight{padding:35px 0 55px}
+  .split{padding:40px 0 60px}
+  .beta-callout{padding:38px 24px;gap:25px}
+  .beta-checks{padding:18px 0 0}
+}
